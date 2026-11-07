@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+backend/local_cache.db
+backend/local_cache.db-shm
+backend/local_cache.db-wal
+backend/*.db
+data/raw/*
+!data/raw/.gitkeep
+.DS_Store
