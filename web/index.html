@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Insurance claims lakehouse reliability, reconciliation and autonomous remediation control plane">
+  <title>Claims Reliability Flight Deck</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="canvas-glow" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand-block" href="/" aria-label="Claims Reliability home">
+        <span class="brand-mark" aria-hidden="true"><span class="brand-orbit"></span><span class="brand-axis"></span></span>
+        <span class="brand-copy">
+          <span class="brand-kicker">Claims operations</span>
+          <span class="brand-title">Reliability flight deck</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <div class="telemetry-meta">
+          <span class="meta-label">Cache sync</span>
+          <span class="meta-value" id="cache-sync-label">awaiting telemetry</span>
+        </div>
+        <div class="mode-pill" id="mode-pill" data-mode="unknown">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="mode-label">BOOTING</span>
+        </div>
+        <button class="button button-ghost" id="sync-button" type="button">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M13.2 6.4A5.4 5.4 0 1 0 13 10"></path>
+            <path d="M13.4 2.7v3.9H9.5"></path>
+          </svg>
+          <span>Sync Warehouse</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="section-kicker"><span class="signal-dot"></span> Databricks Free Edition · Serverless telemetry</p>
+          <h1 id="hero-title">Every payout incident,<br><span>explained before retry.</span></h1>
+          <p class="hero-subtitle">Medallion observability, source-to-target reconciliation and payout-safe remediation for insurance claims. Spark Connect only. No RDD or JVM shortcuts.</p>
+        </div>
+        <div class="hero-readout" aria-label="Control plane readout">
+          <div class="readout-row">
+            <span>Runtime mode</span>
+            <strong id="hero-mode">BOOTING</strong>
+          </div>
+          <div class="readout-row">
+            <span>Agent runtime</span>
+            <strong id="hero-llm">checking</strong>
+          </div>
+          <div class="readout-row">
+            <span>Open incidents</span>
+            <strong id="hero-open">0</strong>
+          </div>
+          <div class="readout-row">
+            <span>Diagnosed</span>
+            <strong id="hero-diagnosed">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid" aria-label="Key performance indicators">
+        <article class="kpi-card" data-tone="neutral">
+          <span class="kpi-index">01</span>
+          <span class="kpi-label">Total runs</span>
+          <strong class="kpi-value" id="total-runs-value">0</strong>
+          <span class="kpi-meta" id="total-runs-meta">Pipeline history</span>
+          <span class="kpi-rule" aria-hidden="true"></span>
+        </article>
+        <article class="kpi-card" data-tone="warning" id="sla-card">
+          <span class="kpi-index">02</span>
+          <span class="kpi-label">SLA breaches</span>
+          <strong class="kpi-value" id="sla-breaches-value">0</strong>
+          <span class="kpi-meta" id="sla-breaches-meta">No breached stages</span>
+          <span class="kpi-rule" aria-hidden="true"></span>
+        </article>
+        <article class="kpi-card" data-tone="danger" id="exposure-card">
+          <span class="kpi-index">03</span>
+          <span class="kpi-label">Payout exposure</span>
+          <strong class="kpi-value" id="payout-exposure-value">$0</strong>
+          <span class="kpi-meta" id="payout-exposure-meta">High and critical incidents</span>
+          <span class="kpi-rule" aria-hidden="true"></span>
+        </article>
+        <article class="kpi-card" data-tone="safe" id="reconciliation-card">
+          <span class="kpi-index">04</span>
+          <span class="kpi-label">Latest reconciliation</span>
+          <strong class="kpi-value" id="reconciliation-value">0.00%</strong>
+          <span class="kpi-meta" id="reconciliation-meta">Pass rate</span>
+          <span class="kpi-rule" aria-hidden="true"></span>
+        </article>
+      </section>
+
+      <section class="scenario-console" aria-labelledby="scenario-title">
+        <div class="console-head">
+          <div>
+            <p class="section-kicker">Fault injection</p>
+            <h2 id="scenario-title">Run a controlled incident</h2>
+          </div>
+          <p class="console-note">Executes 50,000 raw claims through Bronze, Silver and Gold. Scenario C halts after a real partial payout commit.</p>
+        </div>
+        <div class="scenario-bar" id="scenario-bar">
+          <button class="scenario-button" type="button" data-scenario="NORMAL" data-tone="safe" aria-label="Trigger scenario NORMAL">
+            <span class="scenario-letter">N</span>
+            <span class="scenario-copy"><strong>NORMAL</strong><small>Clean baseline · 50k claims</small></span>
+            <span class="scenario-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="scenario-button" type="button" data-scenario="A" data-tone="warning" aria-label="Trigger scenario A, provider skew">
+            <span class="scenario-letter">A</span>
+            <span class="scenario-copy"><strong>Provider skew</strong><small>HOSP_999 hot join key</small></span>
+            <span class="scenario-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="scenario-button" type="button" data-scenario="B" data-tone="danger" aria-label="Trigger scenario B, schema drift">
+            <span class="scenario-letter">B</span>
+            <span class="scenario-copy"><strong>Schema drift</strong><small>Currency amounts · duplicate IDs</small></span>
+            <span class="scenario-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="scenario-button" type="button" data-scenario="C" data-tone="critical" aria-label="Trigger scenario C, partial payout commit">
+            <span class="scenario-letter">C</span>
+            <span class="scenario-copy"><strong>Partial payout</strong><small>Non-idempotent append · ledger timeout</small></span>
+            <span class="scenario-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+        <div class="scenario-feedback" id="scenario-feedback" aria-live="polite">
+          <span class="signal-dot" aria-hidden="true"></span>
+          <span id="scenario-feedback-text">Pipeline idle. Select a scenario to inject a controlled failure.</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Incident workspace">
+        <aside class="panel queue-panel" aria-labelledby="queue-title">
+          <header class="queue-head">
+            <div>
+              <p class="section-kicker">Prioritized</p>
+              <h2 id="queue-title">Incident queue</h2>
+            </div>
+            <span class="count-badge" id="queue-count">0</span>
+          </header>
+          <p class="queue-subtitle" id="queue-subtitle">Criticality first, newest signal next.</p>
+          <div class="incident-list" id="incident-list">
+            <div class="queue-empty">Collecting pipeline telemetry…</div>
+          </div>
+          <footer class="queue-footer">
+            <span><i class="legend-dot legend-dot--fail"></i>Failed</span>
+            <span><i class="legend-dot legend-dot--warn"></i>Degraded</span>
+            <span><i class="legend-dot legend-dot--safe"></i>Diagnosed</span>
+          </footer>
+        </aside>
+
+        <section class="panel triage-panel" id="triage-panel" aria-label="Agent triage and reconciliation">
+          <div class="empty-state" id="triage-empty">
+            <div class="empty-radar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p class="section-kicker">No incident selected</p>
+            <h2>Select a signal to begin triage</h2>
+            <p>Trigger a scenario, choose an incident from the queue, then let the agent inspect plans, tracebacks and notebook source before recommending a retry.</p>
+            <div class="empty-chips">
+              <span>Unified diffs</span>
+              <span>Payout exposure</span>
+              <span>Retry safety</span>
+            </div>
+          </div>
+
+          <div class="triage-loading" id="triage-loading" hidden>
+            <div class="skeleton skeleton--short"></div>
+            <div class="skeleton skeleton--title"></div>
+            <div class="skeleton-grid">
+              <div class="skeleton skeleton--card"></div>
+              <div class="skeleton skeleton--card"></div>
+              <div class="skeleton skeleton--card"></div>
+            </div>
+            <div class="skeleton skeleton--bar"></div>
+          </div>
+
+          <div class="triage-content" id="triage-content" hidden>
+            <header class="triage-header">
+              <div class="triage-heading">
+                <p class="section-kicker" id="incident-eyebrow">Incident</p>
+                <h2 id="triage-title">Loading diagnosis</h2>
+                <p class="triage-subtitle" id="triage-subtitle">Telemetry and run context</p>
+              </div>
+              <button class="button button-primary" id="run-agent-button" type="button">
+                <span class="button-spinner" aria-hidden="true"></span>
+                <svg class="button-icon" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <path d="M3 2.8 12.2 8 3 13.2V2.8Z"></path>
+                </svg>
+                <span id="run-agent-label">Run Agent</span>
+              </button>
+            </header>
+
+            <div class="badge-row" id="badge-row" aria-label="Incident classification"></div>
+
+            <div class="incident-metrics" aria-label="Incident metrics">
+              <div class="metric-cell">
+                <span>Stage</span>
+                <strong id="stat-stage">—</strong>
+              </div>
+              <div class="metric-cell">
+                <span>Rows in / out</span>
+                <strong id="stat-rows">—</strong>
+              </div>
+              <div class="metric-cell">
+                <span>Rejected</span>
+                <strong id="stat-rejected">—</strong>
+              </div>
+              <div class="metric-cell">
+                <span>Top-key skew</span>
+                <strong id="stat-skew">—</strong>
+              </div>
+              <div class="metric-cell">
+                <span>Write mode</span>
+                <strong id="stat-write-mode">—</strong>
+              </div>
+              <div class="metric-cell">
+                <span>Duration</span>
+                <strong id="stat-duration">—</strong>
+              </div>
+            </div>
+
+            <div class="triage-grid">
+              <article class="retry-card" id="retry-card" data-safety="none">
+                <div class="card-topline">
+                  <span class="section-kicker">Retry safety</span>
+                  <span class="model-chip" id="retry-model">awaiting agent</span>
+                </div>
+                <div class="retry-badge" id="retry-badge" data-safety="none">NOT DIAGNOSED</div>
+                <p class="retry-copy" id="retry-copy">Run the agent to evaluate idempotency, partial writes and the correct retry path.</p>
+              </article>
+              <article class="impact-card">
+                <div class="card-topline">
+                  <span class="section-kicker">Insurance impact</span>
+                  <span class="exposure-figure" id="impact-exposure">$0</span>
+                </div>
+                <p class="impact-summary" id="impact-summary">Financial exposure is derived from committed payout batches and delayed adjudication telemetry.</p>
+                <p class="impact-business" id="impact-business">The agent will translate the technical failure into claims, provider and compliance consequences.</p>
+              </article>
+            </div>
+
+            <section class="recon-block" aria-labelledby="recon-title">
+              <div class="recon-head">
+                <div>
+                  <p class="section-kicker">Source to target</p>
+                  <h3 id="recon-title">Reconciliation breakdown</h3>
+                </div>
+                <div class="recon-rate">
+                  <strong id="recon-rate">0.00%</strong>
+                  <span>pass rate</span>
+                </div>
+              </div>
+              <div class="recon-counts">
+                <div><span>Received</span><strong id="recon-received">0</strong></div>
+                <div><span>Valid</span><strong id="recon-valid">0</strong></div>
+                <div><span>Rejected</span><strong id="recon-rejected">0</strong></div>
+                <div><span>Rejection rate</span><strong id="recon-rejection-rate">0.00%</strong></div>
+              </div>
+              <div class="recon-bar" id="recon-bar" role="img" aria-label="No reconciliation data"></div>
+              <div class="recon-legend" id="recon-legend"></div>
+            </section>
+
+            <section class="artifact-section" aria-labelledby="artifact-title">
+              <div class="artifact-head">
+                <div>
+                  <p class="section-kicker">Evidence</p>
+                  <h3 id="artifact-title">Artifact viewer</h3>
+                  <p class="artifact-subtitle" id="artifact-subtitle">Formatted plans, source diffs and captured tracebacks</p>
+                </div>
+                <button class="button button-ghost" id="artifact-copy" type="button">Copy artifact</button>
+              </div>
+              <div class="tabs" role="tablist" aria-label="Incident artifacts">
+                <button class="tab is-active" id="tab-diff" type="button" role="tab" aria-selected="true" aria-controls="panel-diff" data-tab="diff">PySpark diff <span class="tab-count" id="diff-count">0</span></button>
+                <button class="tab" id="tab-plan" type="button" role="tab" aria-selected="false" aria-controls="panel-plan" tabindex="-1" data-tab="plan">Query plan <span class="tab-count" id="plan-count">0</span></button>
+                <button class="tab" id="tab-trace" type="button" role="tab" aria-selected="false" aria-controls="panel-trace" tabindex="-1" data-tab="trace">Stack trace <span class="tab-count" id="trace-count">0</span></button>
+              </div>
+              <div class="artifact-frame">
+                <div class="artifact-panel" id="panel-diff" role="tabpanel" aria-labelledby="tab-diff">
+                  <div class="artifact-meta">
+                    <span class="artifact-file" id="diff-file">Unified diff</span>
+                    <span class="artifact-legend"><i class="legend-dot legend-dot--safe"></i>Additions <i class="legend-dot legend-dot--fail"></i>Deletions</span>
+                  </div>
+                  <div class="diff-scroll" id="diff-code"></div>
+                </div>
+                <div class="artifact-panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+                  <div class="artifact-meta">
+                    <span class="artifact-file" id="plan-file">Formatted physical plan</span>
+                    <span class="artifact-legend">Captured through redirected explain output</span>
+                  </div>
+                  <div class="code-scroll" id="plan-code"></div>
+                </div>
+                <div class="artifact-panel" id="panel-trace" role="tabpanel" aria-labelledby="tab-trace" hidden>
+                  <div class="artifact-meta">
+                    <span class="artifact-file" id="trace-file">Captured traceback</span>
+                    <span class="artifact-legend">Stage-level exception context</span>
+                  </div>
+                  <div class="code-scroll" id="trace-code"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="recovery-block" id="recovery-block" data-safety="none" aria-labelledby="recovery-title">
+              <div class="recovery-head">
+                <div>
+                  <p class="section-kicker">Remediation</p>
+                  <h3 id="recovery-title">Recovery SQL / command</h3>
+                </div>
+                <button class="button button-secondary" id="copy-recovery" type="button">Copy command</button>
+              </div>
+              <pre class="recovery-code"><code id="recovery-sql">Run the agent to generate a verified recovery path.</code></pre>
+              <p class="recovery-note" id="recovery-note">No diagnosis is cached for this incident yet.</p>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-identity">
+        <span class="footer-mark" aria-hidden="true"></span>
+        <span>Insurance claims lakehouse · Databricks Free Edition</span>
+      </div>
+      <div class="footer-chips">
+        <span>Spark Connect safe</span>
+        <span>Zero-build UI</span>
+        <span>Deterministic fallback</span>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="false"></div>
+  <div class="global-progress" id="global-progress" hidden aria-hidden="true"><span></span></div>
+  <noscript>JavaScript is required to render live telemetry and incident triage.</noscript>
+</body>
+</html>
